@@ -1,0 +1,21 @@
+version: "3.5"
+services:
+  node-api:
+    container_name: server
+    ports:
+      - "7000:7000"
+    image: poplavko
+    build: ./
+    networks:
+      - server-network
+  mongo-db:
+    image: mongo
+    container_name: mongo-db
+    ports:
+      - "27017-27019:27017-27019"
+    networks:
+      - server-network
+networks:
+  server-network:
+    name: server-network
+    driver: bridge

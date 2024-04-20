@@ -1,0 +1,84 @@
+#sidebar-wrapper {
+  min-height: 100vh;
+  width: 20%;
+  z-index: 1000;
+  position: relative;
+  left: 0;
+  overflow-y: auto;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+  
+}
+
+.sidebar-heading {
+  padding: 0.875rem 1.25rem;
+  font-size: 1.7rem;
+  font-weight: bold;
+}
+
+.toggle-div {
+  display: flex;
+  align-items: center;  /* Aligns children vertically in the center */
+  justify-content: center;  /* Aligns children horizontally in the center */
+  height: 90vh;
+}
+
+.toggle-arrow {
+  margin-left: 5px;
+}
+
+.toggle-arrow:hover{
+  cursor: pointer;
+
+}
+
+.skret-list-item {
+  padding: 10px 10px 10px 20px; /* Increase padding for a bigger look */
+  margin: 5px 0; /* Add some space between items */
+  border-radius: 8px; /* Rounded corners for a modern look */
+  transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth transitions for hover effects */
+}
+
+.skret-list-item:hover {
+  transform: translateY(-5px); /* Lifts the item up */
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Soft shadow for depth */
+}
+
+.skret-list-item h2 {
+  font-size: 1.5rem; /* Larger font size for location */
+  color: #333; /* Dark color for better readability */
+  margin-bottom: 10px; /* Space below the heading */
+}
+
+.rating {
+  display: flex; /* Aligns stars and text inline */
+  align-items: center; /* Vertically center alignment */
+  font-size: 1.2rem; /* Larger text for rating number */
+}
+
+.fa-star {
+  color: #ffc107; /* Gold color for stars */
+  margin-right: 2px; /* Space between stars */
+}
+
+.fa-star {
+  font-size: 1.5em; /* Larger stars */
+}
+
+.rating {
+    margin-bottom: 10px; /* Space below the rating */
+    
+}
+
+
+
+/* Collapse sidebar for small devices */
+@media (max-width: 768px) {
+  #sidebar-wrapper {
+    width: 100%;
+    height: auto;
+    position: relative;
+  }
+  .sidebar-heading {
+    text-align: center;
+  }
+}

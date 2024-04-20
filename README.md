@@ -1,1 +1,1 @@
-# najdi-skret-net
+# App documentation TODO

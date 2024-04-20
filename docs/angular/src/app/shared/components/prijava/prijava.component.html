@@ -1,0 +1,67 @@
+<!--Form-->
+<div class="container-small">
+  <div class="title-centered">
+    <div style="margin-bottom: 12px">
+      <h2 class="h2p" id="objavi-oglas-title">Sign in</h2>
+    </div>
+    <p class="oglas-subtitle">
+      Welcome back. Enter your email and password to log in.
+    </p>
+  </div>
+  <div class="form-w">
+    <form
+      (ngSubmit)="onLoginSubmit()"
+      #form="ngForm"
+      id="prijava-form"
+      class="form"
+      novalidate
+    >
+      <label for="email" class="field-label">E-mail</label>
+      <input
+        type="email"
+        class="text-field w-input prijava-email awesomplete"
+        name="email"
+        id="email"
+        required=""
+        [(ngModel)]="formData.email"
+      />
+      <div class="password-container">
+        <label for="password" class="field-label">Password</label>
+        <input
+          [type]="showPassword ? 'text' : 'password'"
+          class="text-field w-input prijava-password"
+          name="password"
+          id="password"
+          required=""
+          [(ngModel)]="formData.password"
+        />
+        <i
+          class="fas"
+          [class.fa-eye]="!showPassword"
+          [class.fa-eye-slash]="showPassword"
+          (click)="togglePasswordVisibility()"
+        ></i>
+      </div>
+      <div *ngIf="formError" class="form-group">
+        <div class="alert alert-danger p-2 mt-4" role="alert">
+          <i class="fas fa-exclamation-triangle pe-2"></i>{{ formError }}
+        </div>
+      </div>
+      <div class="form-button">
+        <input
+          type="submit"
+          value="Sign in"
+          data-wait="Please wait..."
+          class="submit-button w-button sub-butt"
+        />
+      </div>
+      <!--don't have an account? register-->
+      <label class="field-label" style="margin-top: 10px"
+        >Are you new here?
+        <a routerLink="./../registracija" routerLinkActive="activeRouter"
+          >Register</a
+        ></label
+      >
+    </form>
+  </div>
+</div>

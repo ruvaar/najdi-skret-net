@@ -1,0 +1,25 @@
+<!--create a bootstrap sidebar with a list of skrets-->
+<div class="d-flex" >
+  <div class="bg-light border-right" id="sidebar-wrapper" *ngIf="!sidebarCollapsed" >
+    <div class="sidebar-heading">Skret list</div>   
+    <!--generate a list of toilets from the skreti array-->
+    <div class="list-group list-group-flush">
+      <div
+        *ngFor="let skret of skreti"
+        class="list-group-item list-group-item-action bg-light skret-list-item"
+      >
+       <h2>{{skret.location}}</h2>
+       <div class="rating">
+        {{skret.avgRating}}  
+        <span *ngFor="let i of [1, 2, 3, 4, 5]" class="fa-star" [ngClass]="{'fa-solid': i <= skret.avgRating, 'fa-regular': i > skret.avgRating}"></span>
+         ({{skret.numRatings}}) <br>
+        </div>
+        Petkovškovo nabrežje 12 <br>
+        Ljubljana
+      </div>
+    </div>
+  </div>
+  <div class="toggle-div">
+    <i class="fa-solid toggle-arrow" [ngClass]="{'fa-angle-right' : sidebarCollapsed, 'fa-angle-left': !sidebarCollapsed}" (click)="toggleSidebar()"></i>
+  </div>
+</div>

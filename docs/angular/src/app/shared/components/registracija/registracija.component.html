@@ -1,0 +1,91 @@
+<!--Form-->
+<div class="container-small">
+  <div class="title-centered">
+    <div style="margin-bottom: 12px">
+      <h2 class="h2p" id="objavi-oglas-title">Register</h2>
+    </div>
+    <p class="oglas-subtitle">
+      Enter your data.
+    </p>
+  </div>
+  <div class="form-w">
+    <form
+      (ngSubmit)="onRegisterSubmit()"
+      #form="ngForm"
+      id="registracija-form"
+      class="form"
+      novalidate
+    >
+      <label for="username" class="field-label">Username</label>
+      <input
+        type="text"
+        class="text-field w-input"
+        name="username"
+        id="username"
+        placeholder="example.username"
+        required=""
+        [(ngModel)]="formData.username"
+      />
+  
+      <label for="email" class="field-label">E-mail</label>
+      <input
+        type="email"
+        class="text-field w-input"
+        name="email"
+        id="email"
+        placeholder="name@example.com"
+        required=""
+        [(ngModel)]="formData.email"
+      />
+      <div class="password-container">
+        <label for="password" class="field-label">Password</label>
+        <input
+          [type]="showPassword ? 'text' : 'password'"
+          class="text-field w-input"
+          name="password"
+          id="password1"
+          placeholder="Password should contain at least 8 characters."
+          required=""
+          [(ngModel)]="formData.password1"
+        />
+        <i
+          class="fas"
+          [class.fa-eye]="!showPassword"
+          [class.fa-eye-slash]="showPassword"
+          (click)="togglePasswordVisibility()"
+        ></i>
+      </div>
+      <div class="password-container">
+        <label for="password2" class="field-label">Repeat password</label>
+        <input
+          [type]="showPassword2 ? 'text' : 'password'"
+          class="text-field w-input"
+          name="password2"
+          id="password2"
+          placeholder="Repeat your password from above."
+          required=""
+          [(ngModel)]="formData.password2"
+        />
+        <i
+          class="fas"
+          [class.fa-eye]="!showPassword2"
+          [class.fa-eye-slash]="showPassword2"
+          (click)="togglePasswordVisibility2()"
+        ></i>
+      </div>
+      <div *ngIf="formError" class="form-group">
+        <div class="alert alert-danger p-2 mt-4" role="alert">
+          <i class="fas fa-exclamation-triangle pe-2"></i>{{ formError }}
+        </div>
+      </div>
+
+      <input
+        type="submit"
+        value="Sign up"
+        data-wait="Please wait..."
+        class="submit-button w-button"
+      />
+      <div></div>
+    </form>
+  </div>
+</div>
