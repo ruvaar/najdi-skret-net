@@ -246,9 +246,6 @@ body {
   cursor: pointer;
 }
 
-.main-content {
-  min-height: calc(100vh - 370px);
-}
 
 
 /* Add more styles as necessary */
