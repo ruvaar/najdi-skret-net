@@ -11023,7 +11023,7 @@ var $author$project$Main$init = function (_v0) {
 					$elm$http$Http$get(
 					{
 						expect: A3($w0rm$elm_obj_file$Obj$Decode$expectObj, $author$project$Main$LoadedPoop, $ianmackenzie$elm_units$Length$meters, $author$project$Main$meshes),
-						url: 'poop.obj.txt'
+						url: '/assets/elm/poop.obj.txt'
 					}),
 					A2(
 					$elm$core$Task$perform,

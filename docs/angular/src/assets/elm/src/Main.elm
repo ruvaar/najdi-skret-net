@@ -121,7 +121,7 @@ init _ =
       }
     , Cmd.batch
         [ Http.get
-              { url = "poop.obj.txt"
+              { url = "/assets/elm/poop.obj.txt"
               , expect = Obj.Decode.expectObj LoadedPoop Length.meters meshes
               }
         , Task.perform
