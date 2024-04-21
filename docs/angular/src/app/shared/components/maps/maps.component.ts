@@ -8,13 +8,7 @@ import { AppDataService } from '../../services/app-data.service';
 @Component({
   selector: 'app-maps',
   templateUrl: "./maps.component.html",
-  styles: [ `
-  #map{
-    width: 100%;
-    height: 100vh;
-  }
-`
-  ]
+  styleUrls: ['./maps.component.css']
 })
 
 export class MapsComponent implements OnInit {
