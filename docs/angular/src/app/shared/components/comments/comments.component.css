@@ -1,0 +1,30 @@
+.comment-container {
+  margin-top: 20px;
+  overflow-y:scroll;
+}
+
+
+.comment {
+    margin-bottom: 10px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+
+.comment-author {
+    font-weight: bold;
+}
+
+.comment-img{
+    width: 80%;
+    height: 100px;
+    margin-right: 10px;
+}
+
+.fa-star {
+  color: #ffc107; /* Gold color for stars */
+  margin-right: 2px; /* Space between stars */
+  font-size: 0.7em; /* Larger stars */
+
+}
