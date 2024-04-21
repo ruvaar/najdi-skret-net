@@ -5,13 +5,18 @@
     <!--generate a list of toilets from the skreti array-->
     <div class="list-group list-group-flush">
       <div
-        *ngFor="let skret of skreti"
+        *ngFor="let skret of closestSkreti"
         class="list-group-item list-group-item-action bg-light skret-list-item"
       >
        <h2>{{skret.location}}</h2>
+       <div *ngIf="skret.tags.access !== undefined"><b>Access: </b>{{skret.tags.access}}</div>
+       <div *ngIf="skret.tags.fee !== undefined"><b>Fee: </b> {{skret.tags.fee}}</div>
+       <div *ngIf="skret.tags.wheelchair !== undefined"><b>Wheelchair: </b> {{skret.tags.wheelchair}}</div>
+       <div *ngIf="skret.tags.male !== undefined"><b>Male: </b> {{skret.tags.male}}</div>
+       <div *ngIf="skret.tags.unisex !== undefined"><b>Unisex: </b> {{skret.tags.unisex}}</div>
        <div class="rating">
         {{skret.avgRating}}  
-        <span *ngFor="let i of [1, 2, 3, 4, 5]" class="fa-star" [ngClass]="{'fa-solid': i <= skret.avgRating, 'fa-regular': i > skret.avgRating}"></span>
+        <span *ngFor="let i of [1, 2, 3, 4, 5]" class="fa fa-star" [ngClass]="{'fa fa-solid': i <= skret.avgRating, 'fa fa-regular': i > skret.avgRating}"></span>
          ({{skret.numRatings}}) <br>
         </div>
         Ljubljana
