@@ -9,11 +9,12 @@
         class="list-group-item list-group-item-action bg-light skret-list-item"
       >
        <h2>{{skret.location}}</h2>
-       <div *ngIf="skret.tags.access !== undefined"><b>Access: </b>{{skret.tags.access}}</div>
-       <div *ngIf="skret.tags.fee !== undefined"><b>Fee: </b> {{skret.tags.fee}}</div>
-       <div *ngIf="skret.tags.wheelchair !== undefined"><b>Wheelchair: </b> {{skret.tags.wheelchair}}</div>
-       <div *ngIf="skret.tags.male !== undefined"><b>Male: </b> {{skret.tags.male}}</div>
-       <div *ngIf="skret.tags.unisex !== undefined"><b>Unisex: </b> {{skret.tags.unisex}}</div>
+       <div *ngIf="skret.tags.access !== undefined && skret.tags.access !== 'yes'"><b>Access: </b>{{skret.tags.access}}</div>
+       <div *ngIf="skret.tags.fee !== undefined"><b>Fee required: </b> {{skret.tags.fee}}</div>
+       <div *ngIf="skret.tags.wheelchair !== undefined"><b>Wheelchair accessible: </b> {{skret.tags.wheelchair}}</div>
+       <div *ngIf="skret.tags.male !== undefined"><b>Men's only toilet</b></div>
+       <div *ngIf="skret.tags.unisex !== undefined"><b>Unisex toilet</b></div>
+       <div *ngIf="skret.tags.portable !== undefined"><b>Portable toilet: </b> {{skret.tags.portable}}</div>
        <div class="rating">
         {{skret.avgRating}}  
         <span *ngFor="let i of [1, 2, 3, 4, 5]" class="fa fa-star" [ngClass]="{'fa fa-solid': i <= skret.avgRating, 'fa fa-regular': i > skret.avgRating}"></span>

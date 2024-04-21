@@ -67,7 +67,14 @@ export class SkretListComponent implements OnInit{
   computeDistances(){
     var distances = [];
     for (let s of this.skreti){
-      var dist = Math.abs(s.lat - parseFloat(this.currLat)) + Math.abs(s.lon - parseFloat(this.currLon));
+      var myLen = Object.keys(s.tags).length;
+      var dist = 0;
+      if (myLen <= 4) {
+        dist = 100000;
+      } else {
+        dist = Math.abs(s.lat - parseFloat(this.currLat)) + Math.abs(s.lon - parseFloat(this.currLon));
+      }
+      
       distances.push(dist)
     }
 
@@ -77,6 +84,12 @@ export class SkretListComponent implements OnInit{
 
     const selectedObjects = lowest10Floats.map(item => this.skreti[item.index]);
     this.closestSkreti = selectedObjects;
+    for (let sel of this.closestSkreti){
+      console.log("-------------------")
+      console.log(sel.tags)
+      console.log(Object.keys(sel.tags).length)
+    }
+    console.log(this.closestSkreti);
   }
 
   
