@@ -20,7 +20,9 @@ export class SkretInfoComponent implements OnInit{
 
   ngOnInit(): void {
     this.skretMsgService.currentMarkerPosition.subscribe(position => {
-      this.turnVisibilityOn(position.lat, position.lng, position.avgRating, position.numRatings);
+      if (position.lat != 0 && position.lng != 0){
+        this.turnVisibilityOn(position.lat, position.lng, position.avgRating, position.numRatings);
+      }
     });
   }
 
