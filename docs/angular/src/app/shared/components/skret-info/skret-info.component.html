@@ -1,0 +1,17 @@
+<!--create a bootstrap sidebar with a list of skrets-->
+  <div class="bg-light border-right" id="sidebar-wrapper" *ngIf="isShown" >
+    <!--generate info about the skret-->
+    <div class="sidebar-heading">Skret info</div>
+    <div class="list-group list-group-flush">
+      <div class="list-group-item list-group-item-action bg-light skret-list-item">
+        <h2>{{skret.location}}</h2>
+        <div class="rating">
+          {{skret.avgRating}}  
+          <span *ngFor="let i of [1, 2, 3, 4, 5]" class="fa-star" [ngClass]="{'fa-solid': i <= skret.avgRating, 'fa-regular': i > skret.avgRating}"></span>
+          ({{skret.numRatings}}) <br>
+        </div>
+        <button (click)="navigateToGoogleMaps(skret.lat, skret.lon)">Go to Google Maps</button>
+      </div>
+ 
+  </div>
+

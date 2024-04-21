@@ -1,12 +1,21 @@
 #sidebar-wrapper {
-  min-height: 89vh;
+  max-height: 89vh;
   width: 20%;
   z-index: 1000;
   position: relative;
   left: 0;
   overflow-y: auto;
   box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-  
+    
+}
+
+#sidebar-wrapper::-webkit-scrollbar {
+  display: none;
+}
+
+#sidebar-wrapper {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
 }
 
 .sidebar-heading {

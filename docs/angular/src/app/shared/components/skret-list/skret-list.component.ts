@@ -32,7 +32,14 @@ export class SkretListComponent implements OnInit{
   }
 
   getToilets(): void {
-    this.appDataService.getToilets().subscribe(skreti => this.skreti = skreti);
+    this.appDataService.getToilets().subscribe((skreti) => {
+       this.skreti = skreti;
+         this.skreti.forEach(skret => {
+         skret.avgRating = Math.floor(Math.random() * 5) + 1;
+         skret.numRatings = Math.floor(Math.random() * 100) + 1;
+        });
+      }
+    );
   }
 
   

@@ -1,0 +1,7 @@
+#sidebar-wrapper{
+    position: fixed;
+    top:10vh;
+    right: 0;
+    width:20%;
+    height: 90vh;
+}

@@ -3,6 +3,7 @@ import * as L from 'leaflet';
 import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
 import { AppDataService } from '../../services/app-data.service';
+import { SkretMsgService } from '../../services/skret-msg.service';
 
 
 @Component({
@@ -13,7 +14,8 @@ import { AppDataService } from '../../services/app-data.service';
 
 export class MapsComponent implements OnInit {
   constructor(private http: HttpClient,
-    private appService: AppDataService
+    private appService: AppDataService,
+    private skretMsgService : SkretMsgService
   ) { }
   
   private mapp!: L.Map;
@@ -84,7 +86,7 @@ export class MapsComponent implements OnInit {
           L.marker([latitude, longitude], {icon: L.icon({
             iconUrl: '../../../../assets/markers/strick.png',
             iconSize: [32, 64], // size of the icon
-          })}).addTo(this.mapp);
+          })},).addTo(this.mapp);
 
           // You can now use latitude and longitude in your application
           // For example, display them on a map or send to a server
@@ -104,11 +106,7 @@ export class MapsComponent implements OnInit {
     // Get marker's latitude and longitude
     const lat = marker.getLatLng().lat;
     const lng = marker.getLatLng().lng;
-    
-    console.log('Marker clicked - Latitude:', lat, 'Longitude:', lng);
-    
-    // You can now use this information as needed
-    // For example, open a popup or navigate to a detail page
+    var position = {lat: lat, lng: lng};
+    this.skretMsgService.changeMarkerPosition(position);
   }
-
 }
