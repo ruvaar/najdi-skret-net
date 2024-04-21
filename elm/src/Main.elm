@@ -1,4 +1,4 @@
-port module Main exposing (main, stop)
+port module Main exposing (main)
 
 import Acceleration
 import Angle
@@ -28,30 +28,48 @@ import Point2d
 import Point3d
 import Quantity exposing (Quantity)
 import Rectangle2d
-import Scene3d exposing (Entity)
-import Scene3d.Material as Material
+import Scene3d
+import Scene3d.Material exposing (Texture)
+import Scene3d.Mesh exposing (Shadow, Textured)
 import Sphere3d
 import Task
 import Viewpoint3d
+import WebGL.Texture
+import Http
+import Color exposing (Color)
+import Obj.Decode exposing (Decoder, ObjCoordinates)
+import Frame3d exposing (Frame3d)
+import Physics.Coordinates exposing (BodyCoordinates)
 
+bodyFrame : Frame3d Meters BodyCoordinates { defines : ObjCoordinates }
+bodyFrame =
+    Frame3d.atOrigin
 
 type Id
     = Mouse
     | Floor
     | Poop
-    -- | Toilet
+    | Toilet
+    | GamePoop
 
+
+type State
+    = BeforeThrow
+    | Throwing Int
+    | AfterThrow
 
 type alias Model =
     { world : World Id
     , width : Quantity Float Pixels
     , height : Quantity Float Pixels
     , maybeRaycastResult : Maybe (RaycastResult Id)
+    , game: State
     , stopped: Bool
+    , poopModel : Maybe (Body Meshy)
     }
 
 
-port stop : (String -> msg) -> Sub msg
+port stop : (Bool -> msg) -> Sub msg
 
 type Msg
     = AnimationFrame
@@ -59,7 +77,39 @@ type Msg
     | MouseDown (Axis3d Meters WorldCoordinates)
     | MouseMove (Axis3d Meters WorldCoordinates)
     | MouseUp
-    | Stop String
+    | Stop Bool
+    | LoadedPoop (Result Http.Error (Body Meshy))
+
+
+type alias Meshy =  (Scene3d.Mesh.Mesh BodyCoordinates { normals : () }
+                         , Shadow BodyCoordinates)
+
+
+meshWithShadow : Decoder Meshy
+meshWithShadow =
+    Obj.Decode.map
+        (\fcs ->
+            let
+                mesh =
+                    Scene3d.Mesh.indexedFaces fcs
+                        |> Scene3d.Mesh.cullBackFaces
+            in
+            (mesh, (Scene3d.Mesh.shadow mesh))
+        )
+        (Obj.Decode.facesIn bodyFrame)
+
+meshes : Body.Behavior -> Decoder (Body Meshy)
+meshes b =
+    Obj.Decode.map2
+        (\convex mesh ->
+            Body.compound
+                [ Physics.Shape.unsafeConvex convex ]
+                mesh
+                |> Body.withBehavior b
+        )
+        (Obj.Decode.object "convex" (Obj.Decode.trianglesIn bodyFrame))
+        (Obj.Decode.object "mesh" meshWithShadow)
+
 
 
 main : Program () Model Msg
@@ -78,18 +128,26 @@ init _ =
       , width = pixels 0
       , height = pixels 0
       , maybeRaycastResult = Nothing
+      , game = BeforeThrow
       , stopped = False
+      , poopModel = Nothing
       }
-    , Task.perform
+    , Cmd.batch
+        [ Http.get
+              { url = "poop.obj.txt"
+              , expect = Obj.Decode.expectObj LoadedPoop Length.meters <| meshes Body.static
+              }
+        , Task.perform
         (\{ viewport } ->
             Resize (round viewport.width) (round viewport.height)
         )
         Browser.Dom.getViewport
+        ]
     )
 
 
 subscriptions : Model -> Sub Msg
-subscriptions m =
+subscriptions _ =
     Sub.batch
         [ Browser.Events.onResize Resize
         , Browser.Events.onAnimationFrame (\_ -> AnimationFrame)
@@ -101,7 +159,7 @@ initialWorld : World Id
 initialWorld =
     World.empty
         |> World.withGravity (Acceleration.gees 1) Direction3d.negativeZ
-        |> World.add poop
+        |> World.add skret
         |> World.add (Body.plane Floor)
 
 
@@ -113,10 +171,22 @@ poopBlocks =
     ]
 
 
-poop : Body Id
-poop =
-    Body.compound (List.map Physics.Shape.block poopBlocks) Poop
-        |> Body.withBehavior (Body.dynamic (kilograms 1))
+-- poopPlaceholder :  -> Body Id
+-- poopPlaceholder =
+--     Body.compound (List.map Physics.Shape.block poopBlocks) Poop
+--         |> Body.withBehavior (Body.dynamic (kilograms 1))
+skret: Body Id
+skret =
+    Body.compound (List.map Physics.Shape.block skretModel) Toilet
+        |> Body.withBehavior Body.static
+
+skretModel : List (Block3d Meters BodyCoordinates)
+skretModel =
+    [Block3d.from
+         (Point3d.millimeters -50 -50 -50)
+         (Point3d.millimeters 50 50 50)
+    ]
+
 
 camera : Camera3d Meters WorldCoordinates
 camera =
@@ -132,32 +202,36 @@ camera =
 
 
 view : Model -> Html Msg
-view { world, width, height } =
-    Html.div
-        [ Html.Attributes.style "position" "absolute"
-        , Html.Attributes.style "left" "0"
-        , Html.Attributes.style "top" "0"
-        , Html.Events.on "mousedown" (decodeMouseRay camera width height MouseDown)
-        , Html.Events.on "mousemove" (decodeMouseRay camera width height MouseMove)
-        , Html.Events.onMouseUp MouseUp
-        ]
-        [ Scene3d.sunny
-            { upDirection = Direction3d.z
-            , sunlightDirection = Direction3d.xyZ (Angle.degrees 135) (Angle.degrees -60)
-            , shadows = True
-            , camera = camera
-            , dimensions =
-                ( Pixels.int (round (Pixels.toFloat width))
-                , Pixels.int (round (Pixels.toFloat height))
-                )
-            , background = Scene3d.transparentBackground
-            , clipDepth = Length.meters 0.1
-            , entities = List.map bodyToEntity (World.bodies world)
-            }
-        ]
+view { world, width, height, stopped} =
+    case stopped of
+        True ->
+            Html.div [] []
+        False ->
+            Html.div
+                [ Html.Attributes.style "position" "absolute"
+                , Html.Attributes.style "left" "0"
+                , Html.Attributes.style "top" "0"
+                , Html.Events.on "mousedown" (decodeMouseRay camera width height MouseDown)
+                , Html.Events.on "mousemove" (decodeMouseRay camera width height MouseMove)
+                , Html.Events.onMouseUp MouseUp
+                ]
+                [ Scene3d.sunny
+                    { upDirection = Direction3d.z
+                    , sunlightDirection = Direction3d.xyZ (Angle.degrees 135) (Angle.degrees -60)
+                    , shadows = True
+                    , camera = camera
+                    , dimensions =
+                        ( Pixels.int (round (Pixels.toFloat width))
+                        , Pixels.int (round (Pixels.toFloat height))
+                        )
+                    , background = Scene3d.transparentBackground
+                    , clipDepth = Length.meters 0.1
+                    , entities = List.map bodyToEntity (World.bodies world)
+                    }
+                ]
 
 
-bodyToEntity : Body Id -> Entity WorldCoordinates
+bodyToEntity : (Body Id) -> Scene3d.Entity WorldCoordinates
 bodyToEntity body =
     let
         frame =
@@ -169,14 +243,14 @@ bodyToEntity body =
     Scene3d.placeIn frame <|
         case id of
             Mouse ->
-                Scene3d.sphere (Material.matte Color.white)
+                Scene3d.sphere (Scene3d.Material.matte Color.white)
                     (Sphere3d.atOrigin (millimeters 20))
 
             Poop ->
                 poopBlocks
                     |> List.map
                         (Scene3d.blockWithShadow
-                            (Material.nonmetal
+                            (Scene3d.Material.nonmetal
                                 { baseColor = Color.white
                                 , roughness = 0.25
                                 }
@@ -185,19 +259,34 @@ bodyToEntity body =
                     |> Scene3d.group
 
             Floor ->
-                Scene3d.quad (Material.matte Color.darkCharcoal)
+                Scene3d.quad (Scene3d.Material.matte Color.darkCharcoal)
                     (Point3d.meters -15 -15 0)
                     (Point3d.meters -15 15 0)
                     (Point3d.meters 15 15 0)
                     (Point3d.meters 15 -15 0)
+            Toilet ->
+                Scene3d.sphereWithShadow
+                    (Scene3d.Material.nonmetal
+                         {baseColor = Color.blue
+                         , roughness = 0.1
+                         }
+                    ) (Sphere3d.atOrigin (millimeters 20))
+            GamePoop ->
+                poopBlocks
+                    |> List.map
+                        (Scene3d.blockWithShadow
+                            (Scene3d.Material.nonmetal
+                                { baseColor = Color.white
+                                , roughness = 0.25
+                                }
+                            )
+                        )
+                    |> Scene3d.group
+
 
 
 update : Msg -> Model -> Model
 update msg model =
-    if model.stopped
-    then
-        model
-    else
         case msg of
             AnimationFrame ->
                 { model | world = World.simulate (seconds (1 / 60)) model.world }
@@ -291,8 +380,18 @@ update msg model =
                             (\body -> Body.data body /= Mouse)
                             model.world
                 }
-            Stop _ ->
-                {model | stopped = True}
+            Stop s ->
+                {model | stopped = s}
+            LoadedPoop a ->
+                {model | poopModel = a
+                        |> Result.toMaybe}
+            -- LoadedTexture rez ->
+            --     {model
+            --      | material =
+            --         rez
+            --             |> Result.map Scene3d.Material.texturedMatte
+            --             |> Result.toMaybe
+            --     }
 
 
 decodeMouseRay :
@@ -300,7 +399,7 @@ decodeMouseRay :
     -> Quantity Float Pixels
     -> Quantity Float Pixels
     -> (Axis3d Meters WorldCoordinates -> msg)
-    -> Decoder msg
+    -> Json.Decode.Decoder msg
 decodeMouseRay camera3d width height rayToMsg =
     Json.Decode.map2
         (\x y ->
