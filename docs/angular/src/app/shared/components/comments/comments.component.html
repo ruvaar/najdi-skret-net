@@ -6,11 +6,12 @@
             <div class="comment-container">
                 <div *ngFor="let comment of comments" class="comment">
                     <div class="comment-header">
-                        <span class="comment-author">{{comment.username}}</span>
+                        <span class="comment-author">{{comment.username}}</span><br>
                         <span class="comment-date">{{comment.createdOn}}</span>
                     </div>
                     <span *ngFor="let i of [1, 2, 3, 4, 5]" class="fa-star" [ngClass]="{'fa-solid': i <= comment.rating, 'fa-regular': i > comment.rating}"></span>
-                    <img class="comment-img" src="{{comment.imgSrc}}" >
+                    <img class="comment-img" src="{{comment.imgSrc}}" />
+                    <br>
                     <div class="comment-body">
                         {{comment.comment}}
                     </div>
@@ -18,4 +19,17 @@
             </div>
         </div>
     </div>
+</div>
+
+<div class="container add-comment">
+    <h3>Add a Review</h3>
+        <div class="form-group">
+            <label for="rating">Rating</label>
+            <div class="rating">
+                <span *ngFor="let i of [1, 2, 3, 4, 5]" class="fa-star fa-solid" ></span>
+            </div>
+            <input type="text"/> 
+            <i class="fa-solid fa-paper-plane"></i>
+            <i class="fa-solid fa-upload"></i>
+        </div>
 </div>

@@ -1,6 +1,5 @@
 .comment-container {
   margin-top: 20px;
-  overflow-y:scroll;
 }
 
 
@@ -14,11 +13,17 @@
 
 .comment-author {
     font-weight: bold;
+    font-size: 20px;
+}
+
+
+.comment-date {
+  font-size:14px;
 }
 
 .comment-img{
     width: 80%;
-    height: 100px;
+    height: 150px;
     margin-right: 10px;
 }
 
@@ -27,4 +32,16 @@
   margin-right: 2px; /* Space between stars */
   font-size: 0.7em; /* Larger stars */
 
+}
+
+.fa-paper-plane {
+  margin: 0px 10px 0px 10px;
+}
+
+.fa-paper-plane:hover{
+  cursor: pointer;
+}
+
+.add-comment {
+  margin-bottom:30px;
 }

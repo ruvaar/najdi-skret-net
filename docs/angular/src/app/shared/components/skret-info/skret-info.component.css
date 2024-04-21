@@ -4,6 +4,12 @@
     right: 0;
     width:20%;
     height: 90vh;
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+
+#sidebar-wrapper::-webkit-scrollbar {
+  display: none;
 }
 
 .sidebar-heading {
