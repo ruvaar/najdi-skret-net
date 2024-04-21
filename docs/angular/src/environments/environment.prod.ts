@@ -1,4 +1,4 @@
 export const environment = {
-    apiUrl: "TODO",
+    apiUrl: "https://najdi-skret-net.onrender.com/api/",
     production: true,
   };
