@@ -17,7 +17,8 @@ export class MapsComponent implements OnInit {
   ) { }
   
   private mapp!: L.Map;
-  private icon!: L.Icon;
+  private icon1!: L.Icon;
+  private icon2!: L.Icon;
   coordinates: string = '';
   markers: any[] = []; 
 
@@ -29,11 +30,17 @@ export class MapsComponent implements OnInit {
   
   private initMap(): void {
     var map = L.map('map').setView([46.0569, 14.5058], 13);
-    let customIcon = L.icon({
-      iconUrl: '../../../../assets/markers/toilet-icon.png',
+    let customIcon1 = L.icon({
+      iconUrl: '../../../../assets/markers/toilet-iconGold.png',
       iconSize: [64, 64], // size of the icon
     });
-    this.icon = customIcon;
+    this.icon1 = customIcon1;
+
+    let customIcon2 = L.icon({
+      iconUrl: '../../../../assets/markers/toilet-iconGreen.png',
+      iconSize: [64, 64], // size of the icon
+    });
+    this.icon2 = customIcon2;
 
     this.mapp = map;
   
@@ -50,15 +57,19 @@ export class MapsComponent implements OnInit {
         if (d.lat == 0 && d.lon == 0) {
           continue;
         }
-        const marker = L.marker([d.lat, d.lon], {icon: this.icon}).addTo(this.mapp)
-          .bindPopup(d.lat + " " + d.lon)
-          .openPopup();
-        marker.on('click', () => {
+        if (!d.tags.fee || d.tags.fee != 'no') {
+          const marker = L.marker([d.lat, d.lon], {icon: this.icon1}).addTo(this.mapp)
+          marker.on('click', () => {
             this.onMarkerClick(marker); // Call onMarkerClick when marker is clicked
           });
-      } 
+        } else {
+          const marker = L.marker([d.lat, d.lon], {icon: this.icon2}).addTo(this.mapp)
+          marker.on('click', () => {
+            this.onMarkerClick(marker);
+          });
+        }
+      }
       this.mapp.setView([46.0569, 14.5058], 13);
-
     });
   }
 
