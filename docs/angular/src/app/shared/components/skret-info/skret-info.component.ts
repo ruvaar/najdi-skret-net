@@ -20,20 +20,25 @@ export class SkretInfoComponent implements OnInit{
 
   ngOnInit(): void {
     this.skretMsgService.currentMarkerPosition.subscribe(position => {
-      this.turnVisibilityOn(position);
+      this.turnVisibilityOn(position.lat, position.lng, position.avgRating, position.numRatings);
     });
   }
 
-  turnVisibilityOn(latlng: {lat: number, lng: number}) {
+  turnVisibilityOn(lat: number, lng: number, avgRating: number, totalRatings: number) {
     this.appDataService.getToilets().subscribe((data: any) => {
       for (let d of data) {
-        if (d.lat == latlng.lat && d.lon == latlng.lng) {
+        if (d.lat == lat && d.lon == lng) {
           this.skret = d;
           this.isShown = true;
-          console.log("???");
+          this.skret.avgRating = avgRating;
+          this.skret.numRatings = totalRatings;
         }
       }
     });
+  }
+
+  toggle(){
+    this.isShown = !this.isShown;
   }
   
   navigateToGoogleMaps(destinationLat: Number,destinationLng: Number): void {

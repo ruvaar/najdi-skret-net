@@ -6,8 +6,9 @@ body {
 }
 
 .najdiSkret {
-  font-family: "Changa One", Impact, sans-serif;
-  font-size: 50px;
+  color: black !important;
+  font-size: 40px;
+  font-family: 'Courier New', Courier, monospace;
 }
 .logo-link {
   text-decoration: none;
@@ -90,116 +91,6 @@ body {
   background: #576b53;
 }
 
-.wishes-section {
-  text-align: center;
-  padding: 30px;
-
-  .wishes_label {
-    font-family: Archivo, sans-serif;
-    font-size: 60px;
-    color: #3e404c;
-    font-weight: 600;
-  }
-  .wishes_label mark {
-    background-color: transparent;
-    color: #3ebb7f;
-    padding: 0px 10px 0px 10px;
-    border-radius: 10px;
-  }
-}
-
-.wish_item {
-  width: 70%;
-  height: 190px;
-  background-color: white;
-  box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px,
-    rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
-  border-radius: 10px;
-  text-align: center;
-  padding: 20px;
-  margin: 20px 0px 20px 0px;
-
-  .wish_image {
-    height: 60%;
-  }
-  .wish_label {
-    margin: 20px 0px 20px 0px;
-    font-family: Changa One, Impact, sans-serif;
-    color: #3ebb7f;
-  }
-}
-
-.about-us {
-  background-color: rgb(98, 98, 98);
-  color: white;
-  padding: 50px 20px 50px 20px;
-  .about-us-info {
-    padding: 20px;
-  }
-}
-
-.top-donators {
-  align-items: center;
-  text-align: center;
-  padding: 100px 0px 50px 0px;
-
-  .top-donators-label {
-    font-size: 60px;
-    font-family: Changa One, Impact, sans-serif;
-    font-weight: 400;
-    color: #3e404c;
-  }
-
-  .top-donators-label mark {
-    background-color: transparent;
-    color: #3ebb7f;
-  }
-
-  .donators-rects {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-
-  .donator-rect {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 10px;
-    width: 100%;
-    margin: 10px;
-    height: 100px;
-    background-color: transparent;
-    text-align: center;
-    align-items: center;
-    padding-top: 20px;
-    padding-bottom: 20px;
-    display: flex;
-    border-bottom: 1px solid #555660;
-  }
-
-  .donator-rect img {
-    height: 100%;
-  }
-
-  .donator-rect h3 {
-    font-family: Changa One, Impact, sans-serif;
-    font-size: 2.5rem;
-    font-weight: 400;
-    color: #3e404c;
-    margin: 0;
-  }
-
-  .kolicina-donatorja {
-    text-align: left;
-    width: 150px;
-  }
-
-  .ime-donatorja {
-    text-align: left;
-    width: 500px;
-  }
-}
 
 .activeRouter {
   font-weight: bold;
@@ -247,13 +138,3 @@ body {
 }
 
 
-
-/* Add more styles as necessary */
-@media handheld and (max-width: 768px) {
-  .donator-rect {
-    padding: 20px 0px 20px 0px;
-  }
-  .donator-rect h3 {
-    font-size: 30px;
-  }
-}

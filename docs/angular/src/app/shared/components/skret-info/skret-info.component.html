@@ -1,5 +1,6 @@
 <!--create a bootstrap sidebar with a list of skrets-->
   <div class="bg-light border-right" id="sidebar-wrapper" *ngIf="isShown" >
+    <button class="btn hide-btn" (click)="toggle()">X</button>
     <!--generate info about the skret-->
     <div class="sidebar-heading">Skret info</div>
     <div class="list-group list-group-flush">
@@ -10,7 +11,13 @@
           <span *ngFor="let i of [1, 2, 3, 4, 5]" class="fa-star" [ngClass]="{'fa-solid': i <= skret.avgRating, 'fa-regular': i > skret.avgRating}"></span>
           ({{skret.numRatings}}) <br>
         </div>
-        <button (click)="navigateToGoogleMaps(skret.lat, skret.lon)">Go to Google Maps</button>
+        <div *ngIf="skret.tags.access !== undefined && skret.tags.access !== 'yes'"><b>Access: </b>{{skret.tags.access}}</div>
+       <div *ngIf="skret.tags.fee !== undefined"><b>Fee required: </b> {{skret.tags.fee}}</div>
+       <div *ngIf="skret.tags.wheelchair !== undefined"><b>Wheelchair accessible: </b> {{skret.tags.wheelchair}}</div>
+       <div *ngIf="skret.tags.male !== undefined"><b>Men's only toilet</b></div>
+       <div *ngIf="skret.tags.unisex !== undefined"><b>Unisex toilet</b></div>
+       <div *ngIf="skret.tags.portable !== undefined"><b>Portable toilet: </b> {{skret.tags.portable}}</div>
+        <i class="fa-solid fa-location-arrow" (click)="navigateToGoogleMaps(skret.lat, skret.lon)"> Navigate</i>
       </div>
  
   </div>

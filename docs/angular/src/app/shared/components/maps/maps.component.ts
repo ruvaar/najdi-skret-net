@@ -103,10 +103,9 @@ export class MapsComponent implements OnInit {
   }
 
   onMarkerClick(marker: any) {
-    // Get marker's latitude and longitude
     const lat = marker.getLatLng().lat;
     const lng = marker.getLatLng().lng;
     var position = {lat: lat, lng: lng};
-    this.skretMsgService.changeMarkerPosition(position);
+    this.skretMsgService.changeMarkerPosition(lat,lng);
   }
 }

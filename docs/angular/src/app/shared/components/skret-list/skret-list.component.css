@@ -6,6 +6,7 @@
   left: 0;
   overflow-y: auto;
   box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+  padding:3px;
     
 }
 
@@ -41,16 +42,21 @@
 }
 
 .skret-list-item {
-  padding: 10px 10px 10px 20px; /* Increase padding for a bigger look */
-  margin: 5px 0; /* Add some space between items */
+  padding: 10px 10px 40px 20px; /* Increase padding for a bigger look */
+  margin: 2px 0px; /* Add some space between items */
   border-radius: 8px; /* Rounded corners for a modern look */
   transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth transitions for hover effects */
+  border: 2px solid #ccc; /* Adding a light grey border */
+  background-color: #f9f9f9; /* Light background color */
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1); /* Subtle shadow for depth */
+  cursor: pointer; /* Pointer cursor on hover */
 }
 
 .skret-list-item:hover {
-  transform: translateY(-5px); /* Lifts the item up */
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Soft shadow for depth */
+  transform: translateY(-3px); /* Slightly raise the item */
+  box-shadow: 0 5px 15px rgba(0,0,0,0.2); /* Stronger shadow on hover */
 }
+
 
 .skret-list-item h2 {
   font-size: 1.5rem; /* Larger font size for location */
@@ -67,10 +73,8 @@
 .fa-star {
   color: #ffc107; /* Gold color for stars */
   margin-right: 2px; /* Space between stars */
-}
+  font-size: 1em; /* Larger stars */
 
-.fa-star {
-  font-size: 1.5em; /* Larger stars */
 }
 
 .rating {

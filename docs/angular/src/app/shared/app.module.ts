@@ -18,6 +18,7 @@ import { MapsComponent } from './components/maps/maps.component';
 import { SkretListComponent } from './components/skret-list/skret-list.component';
 import { ShitGameComponent } from './components/shit-game/shit-game.component';
 import { SkretInfoComponent } from './components/skret-info/skret-info.component';
+import { CommentsComponent } from './components/comments/comments.component';
 
 @NgModule({
   declarations: [
@@ -30,6 +31,7 @@ import { SkretInfoComponent } from './components/skret-info/skret-info.component
     MapsComponent,
     ShitGameComponent,
     SkretInfoComponent,
+    CommentsComponent,
   ],
   imports: [
     BrowserModule,

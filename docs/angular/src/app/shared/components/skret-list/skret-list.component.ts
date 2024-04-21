@@ -3,6 +3,8 @@ import { Skret} from '../../classes/skret';
 import { AppDataService } from '../../services/app-data.service';
 import { HttpClientModule } from '@angular/common/http';
 import { HttpClient } from '@angular/common/http';
+import { SkretMsgService } from '../../services/skret-msg.service';
+
 
 @Component({
   selector: 'app-skret-list',
@@ -13,15 +15,14 @@ export class SkretListComponent implements OnInit{
 
   constructor(
     private appDataService: AppDataService,
-    private http: HttpClient
+    private http: HttpClient,
+    private skretMsgService : SkretMsgService
   ) {}
 
   skreti!: Skret[];
   closestSkreti!: Skret[];
   filteredSkreti!: Skret[];
   selectedSkret!: Skret;
-  currLat = '';
-  currLon = '';
 
   sidebarCollapsed = false;
 
@@ -32,7 +33,6 @@ export class SkretListComponent implements OnInit{
 
   ngOnInit(): void {
     this.getToilets();
-    this.getLocation();
   }
 
   getToilets(): void {
@@ -42,23 +42,19 @@ export class SkretListComponent implements OnInit{
          skret.avgRating = Math.floor(Math.random() * 5) + 1;
          skret.numRatings = Math.floor(Math.random() * 100) + 1;
         });
-      this.closestSkreti = data;
-      
+      this.closestSkreti = this.skreti;      
+      this.getLocation();
     });
+
   }
 
   getLocation() {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
-          const latitude = position.coords.latitude;
-          const longitude = position.coords.longitude;
-          this.currLat = latitude.toString();
-          this.currLon = longitude.toString();
-          this.computeDistances();
-
-          // You can now use latitude and longitude in your application
-          // For example, display them on a map or send to a server
+          var latitude = position.coords.latitude;
+          var longitude = position.coords.longitude;
+          this.computeDistances(latitude, longitude);
         },
         (error) => {
           console.error("Error getting location:", error.message);
@@ -69,32 +65,38 @@ export class SkretListComponent implements OnInit{
     }
   }
 
-  computeDistances(){
+  computeDistances(lat1 : number, lon1 : number){
     var distances = [];
-    for (let s of this.skreti){
-      var myLen = Object.keys(s.tags).length;
-      var dist = 0;
-      if (myLen <= 4) {
-        dist = 100000;
-      } else {
-        dist = Math.abs(s.lat - parseFloat(this.currLat)) + Math.abs(s.lon - parseFloat(this.currLon));
-      }
-      
-      distances.push(dist)
+  //calculate distance between current location and each skret and pick the closest 10
+  //get the length of this.skreti
+    var len = this.skreti.length;
+    for (var i = 0; i <  len; i++ ){
+      var lat2 = this.skreti[i].lat;
+      var lon2 = this.skreti[i].lon;
+      var R = 6371; // Radius of the earth in km
+      var dLat = this.deg2rad(lat2-lat1);  // deg2rad below
+      var dLon = this.deg2rad(lon2-lon1); 
+      var a = 
+        Math.sin(dLat/2) * Math.sin(dLat/2) +
+        Math.cos(this.deg2rad(lat1)) * Math.cos(this.deg2rad(lat2)) * 
+        Math.sin(dLon/2) * Math.sin(dLon/2)
+        ; 
+      var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+      var d = R * c; // Distance in km
+      d = Math.round(d * 100) / 100;
+      distances.push(d);
+      this.skreti[i].distance = d;
     }
 
-    const indexedFloats = distances.map((value, index) => ({ value, index }));
-    indexedFloats.sort((a, b) => a.value - b.value);
-    const lowest10Floats = indexedFloats.slice(0, 10);
-
-    const selectedObjects = lowest10Floats.map(item => this.skreti[item.index]);
-    this.closestSkreti = selectedObjects;
-    for (let sel of this.closestSkreti){
-      console.log("-------------------")
-      console.log(sel.tags)
-      console.log(Object.keys(sel.tags).length)
+    var closest = [];
+    for (let i = 0; i < 10; i++){
+      var min = Math.min(...distances);
+      var index = distances.indexOf(min);
+      closest.push(this.skreti[index]);
+      distances[index] = Number.MAX_VALUE;
     }
-    console.log(this.closestSkreti);
+    this.closestSkreti = closest;
+
   }
 
   
@@ -105,5 +107,13 @@ export class SkretListComponent implements OnInit{
 
     // Open the URL in a new tab/window
     window.open(googleMapsUrl, '_blank');
+  }
+
+  selectSkret(skret: Skret): void {
+    this.skretMsgService.changeMarkerPosition(skret.lat, skret.lon, skret.avgRating, skret.numRatings);
+  }
+
+  deg2rad(deg: number): number {
+    return deg * (Math.PI/180)
   }
 }

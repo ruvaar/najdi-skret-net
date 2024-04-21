@@ -6,4 +6,5 @@ export class Skret {
     lat!: number;
     lon!: number;
     tags!: any;
+    distance?: number;
 }
