@@ -45,6 +45,10 @@
 
 }
 
+.fa-location-arrow:hover{
+    cursor: pointer;
+}
+
 .rating {
     margin-bottom: 10px; /* Space below the rating */
     
