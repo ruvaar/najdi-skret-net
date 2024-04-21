@@ -1,13 +1,21 @@
 const mongoose = require('mongoose')
 
 const ToiletSchema = new mongoose.Schema({
-    toilet_id: {
-        type: String,
+    id: {
+        type: Number,
         required: true,
     },
-    avgRating: {
+    lat: {
         type: Number,
         default: 0,
+    },
+    lon: {
+        type: Number,
+        default: 0,
+    },
+    tags: {
+        type: Object,
+        default: {},
     },
 });
 
