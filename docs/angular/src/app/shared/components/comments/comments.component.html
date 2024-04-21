@@ -1,0 +1,22 @@
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <h3>Reviews</h3>
+            <!--iterate over comments -->
+            <div class="comment-container">
+                <div *ngFor="let comment of comments" class="comment">
+                    <div class="comment-header">
+                        <span class="comment-author">{{comment.username}}</span>
+                        <span class="comment-date">{{comment.createdOn}}</span>
+                    </div>
+                    <span *ngFor="let i of [1, 2, 3, 4, 5]" class="fa-star" [ngClass]="{'fa-solid': i <= comment.rating, 'fa-regular': i > comment.rating}"></span>
+                    <img class="comment-img" src="{{comment.imgSrc}}" >
+                    <div class="comment-body">
+                        {{comment.comment}}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

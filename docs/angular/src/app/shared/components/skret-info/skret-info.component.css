@@ -16,8 +16,8 @@
 
 .hide-btn {
     position: fixed;
-    top: 10vh;
-    right: 0;
+    top: 11vh;
+    right: 20px;
     z-index: 1000;
 }
 
@@ -41,10 +41,9 @@
 .fa-star {
   color: #ffc107; /* Gold color for stars */
   margin-right: 2px; /* Space between stars */
-  font-size: 1.2m; /* Larger stars */
+  font-size: 1.2em; /* Larger stars */
 
 }
-
 
 .rating {
     margin-bottom: 10px; /* Space below the rating */

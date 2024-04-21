@@ -7,7 +7,9 @@ import { HistoryService } from "../../services/history.service";
 @Component({
   selector: "app-framework",
   templateUrl: "framework.component.html",
-  styles: [],
+  styles: [
+   ".logo { height: 75px; width:75px; margin: -10px 10px -10px -20px; }",
+  ],
 })
 export class FrameworkComponent {
   constructor(

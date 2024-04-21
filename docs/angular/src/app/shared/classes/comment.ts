@@ -3,6 +3,7 @@ export class Comment {
   username!: string;
   comment?: string;
   createdOn!: string;
-  rating?: number;
+  rating!: number;
   xp?: number;
+  imgSrc?: string;
 }
