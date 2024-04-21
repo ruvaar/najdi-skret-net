@@ -40,6 +40,7 @@ import Color exposing (Color)
 import Obj.Decode exposing (Decoder, ObjCoordinates)
 import Frame3d exposing (Frame3d)
 import Physics.Coordinates exposing (BodyCoordinates)
+import Vector3d
 
 bodyFrame : Frame3d Meters BodyCoordinates { defines : ObjCoordinates }
 bodyFrame =
@@ -50,7 +51,6 @@ type Id
     | Floor
     | Poop
     | Toilet
-    | GamePoop
 
 
 type State
@@ -65,7 +65,7 @@ type alias Model =
     , maybeRaycastResult : Maybe (RaycastResult Id)
     , game: State
     , stopped: Bool
-    , poopModel : Maybe (Body Meshy)
+    , poopModel : Maybe Meshy
     }
 
 
@@ -78,15 +78,14 @@ type Msg
     | MouseMove (Axis3d Meters WorldCoordinates)
     | MouseUp
     | Stop Bool
-    | LoadedPoop (Result Http.Error (Body Meshy))
+    | LoadedPoop (Result Http.Error Meshy)
 
 
-type alias Meshy =  (Scene3d.Mesh.Mesh BodyCoordinates { normals : () }
-                         , Shadow BodyCoordinates)
+type alias Meshy = Scene3d.Mesh.Mesh BodyCoordinates { normals : () }
 
 
-meshWithShadow : Decoder Meshy
-meshWithShadow =
+meshes : Decoder Meshy
+meshes =
     Obj.Decode.map
         (\fcs ->
             let
@@ -94,22 +93,9 @@ meshWithShadow =
                     Scene3d.Mesh.indexedFaces fcs
                         |> Scene3d.Mesh.cullBackFaces
             in
-            (mesh, (Scene3d.Mesh.shadow mesh))
+            (mesh)
         )
         (Obj.Decode.facesIn bodyFrame)
-
-meshes : Body.Behavior -> Decoder (Body Meshy)
-meshes b =
-    Obj.Decode.map2
-        (\convex mesh ->
-            Body.compound
-                [ Physics.Shape.unsafeConvex convex ]
-                mesh
-                |> Body.withBehavior b
-        )
-        -- (Obj.Decode.object "convex" (Obj.Decode.trianglesIn bodyFrame))
-        (Obj.Decode.object "mesh" meshWithShadow)
-
 
 
 main : Program () Model Msg
@@ -135,7 +121,7 @@ init _ =
     , Cmd.batch
         [ Http.get
               { url = "poop.obj.txt"
-              , expect = Obj.Decode.expectObj LoadedPoop Length.meters <| meshes Body.static
+              , expect = Obj.Decode.expectObj LoadedPoop Length.meters meshes
               }
         , Task.perform
         (\{ viewport } ->
@@ -159,23 +145,11 @@ initialWorld : World Id
 initialWorld =
     World.empty
         |> World.withGravity (Acceleration.gees 1) Direction3d.negativeZ
-        |> World.add skret
+        |> World.add (skret |> Body.translateBy (Vector3d.meters -1 -1 0))
         |> World.add poop
         |> World.add (Body.plane Floor)
 
 
-poopBlocks : List (Block3d Meters BodyCoordinates)
-poopBlocks =
-    [ Block3d.from
-        (Point3d.millimeters -50 -50 -50)
-        (Point3d.millimeters 50 50 50)
-    ]
-
-
--- poopPlaceholder :  -> Body Id
--- poopPlaceholder =
---     Body.compound (List.map Physics.Shape.block poopBlocks) Poop
---         |> Body.withBehavior (Body.dynamic (kilograms 1))
 skret: Body Id
 skret =
     Body.compound (List.map Physics.Shape.block skretModel) Toilet
@@ -190,8 +164,10 @@ skretModel =
 
 poop: Body Id
 poop =
-    Body.sphere (Sphere3d.atPoint (Point3d.meters 1 1 1) (Length.millimeters 100)) Poop
-        |> Body.withBehavior Body.static
+    Body.sphere (Sphere3d.atOrigin (Length.meters 0.3)) Poop
+        |> Body.withBehavior (Body.dynamic (kilograms 1))
+        |> Body.rotateAround Axis3d.x (Angle.degrees 90)
+        |> Body.translateBy (Vector3d.meters 0 0 1)
 
 
 
@@ -200,7 +176,7 @@ camera =
     Camera3d.perspective
         { viewpoint =
             Viewpoint3d.lookAt
-                { eyePoint = Point3d.meters 3 4 2
+                { eyePoint = Point3d.meters 3 4 4
                 , focalPoint = Point3d.meters -0.5 -0.5 0
                 , upDirection = Direction3d.positiveZ
                 }
@@ -240,7 +216,7 @@ view { world, width, height, stopped, poopModel} =
                 ]
 
 
-bodyToEntity : (Body Meshy) -> (Body Id) ->  Scene3d.Entity WorldCoordinates
+bodyToEntity : Meshy -> (Body Id) ->  Scene3d.Entity WorldCoordinates
 bodyToEntity m body =
     let
         frame =
@@ -256,16 +232,17 @@ bodyToEntity m body =
                     (Sphere3d.atOrigin (millimeters 20))
 
             Poop ->
-                poopBlocks
-                    |> List.map
-                        (Scene3d.blockWithShadow
-                            (Scene3d.Material.nonmetal
-                                { baseColor = Color.white
-                                , roughness = 0.25
-                                }
-                            )
+                Scene3d.group
+                    [ Scene3d.mesh
+                        (Scene3d.Material.nonmetal
+                            { baseColor = Color.brown
+                            , roughness = 1.0}
                         )
-                    |> Scene3d.group
+                        m
+                        |> Scene3d.scaleAbout (Point3d.origin) 0.3
+                        |> Scene3d.translateBy (Vector3d.meters 0 0.1 0)
+                    -- , Scene3d.sphere (Scene3d.Material.nonmetal {baseColor= Color.white, roughness = 0.5}) (Sphere3d.atOrigin (Length.meters 0.3))
+                    ]
 
             Floor ->
                 Scene3d.quad (Scene3d.Material.matte Color.darkCharcoal)
@@ -276,23 +253,10 @@ bodyToEntity m body =
             Toilet ->
                 Scene3d.sphereWithShadow
                     (Scene3d.Material.nonmetal
-                         {baseColor = Color.blue
+                         { baseColor = Color.blue
                          , roughness = 0.1
                          }
                     ) (Sphere3d.atOrigin (millimeters 20))
-            GamePoop ->
-                poopBlocks
-                    |> List.map
-                        (Scene3d.blockWithShadow
-                            (Scene3d.Material.nonmetal
-                                { baseColor = Color.white
-                                , roughness = 0.25
-                                }
-                            )
-                        )
-                    |> Scene3d.group
-
-
 
 update : Msg -> Model -> Model
 update msg model =
@@ -392,16 +356,7 @@ update msg model =
             Stop s ->
                 {model | stopped = s}
             LoadedPoop a ->
-                {model | poopModel = Debug.log "b" a
-                        |> Result.toMaybe}
-            -- LoadedTexture rez ->
-            --     {model
-            --      | material =
-            --         rez
-            --             |> Result.map Scene3d.Material.texturedMatte
-            --             |> Result.toMaybe
-            --     }
-
+                {model | poopModel = a |> Result.toMaybe}
 
 decodeMouseRay :
     Camera3d Meters WorldCoordinates
@@ -412,9 +367,6 @@ decodeMouseRay :
 decodeMouseRay camera3d width height rayToMsg =
     Json.Decode.map2
         (\x y  ->
-             -- let
-             --    c = Debug.toString p |> Debug.log 0
-             -- in
             rayToMsg
                 (Camera3d.ray
                     camera3d

@@ -1,6 +1,3 @@
-# Blender 4.1.0
-# www.blender.org
-mtllib untitled.obj.txt.mtl
 o Cone
 v 0.613416 -0.080287 0.026377
 v 0.556094 -0.069274 0.162777
