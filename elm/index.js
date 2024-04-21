@@ -9544,6 +9544,136 @@ var $w0rm$elm_physics$Physics$Body$plane = $w0rm$elm_physics$Physics$Body$compou
 			$w0rm$elm_physics$Internal$Shape$Plane(
 				{normal: $w0rm$elm_physics$Internal$Vector3$zAxis, position: $w0rm$elm_physics$Internal$Vector3$zero}))
 		]));
+var $author$project$Main$Poop = {$: 'Poop'};
+var $ianmackenzie$elm_geometry$Geometry$Types$Sphere3d = function (a) {
+	return {$: 'Sphere3d', a: a};
+};
+var $elm$core$Basics$abs = function (n) {
+	return (n < 0) ? (-n) : n;
+};
+var $ianmackenzie$elm_units$Quantity$abs = function (_v0) {
+	var value = _v0.a;
+	return $ianmackenzie$elm_units$Quantity$Quantity(
+		$elm$core$Basics$abs(value));
+};
+var $ianmackenzie$elm_geometry$Sphere3d$withRadius = F2(
+	function (givenRadius, givenCenterPoint) {
+		return $ianmackenzie$elm_geometry$Geometry$Types$Sphere3d(
+			{
+				centerPoint: givenCenterPoint,
+				radius: $ianmackenzie$elm_units$Quantity$abs(givenRadius)
+			});
+	});
+var $ianmackenzie$elm_geometry$Sphere3d$atPoint = F2(
+	function (givenCenterPoint, givenRadius) {
+		return A2($ianmackenzie$elm_geometry$Sphere3d$withRadius, givenRadius, givenCenterPoint);
+	});
+var $ianmackenzie$elm_geometry$Point3d$meters = F3(
+	function (x, y, z) {
+		return $ianmackenzie$elm_geometry$Geometry$Types$Point3d(
+			{x: x, y: y, z: z});
+	});
+var $ianmackenzie$elm_units$Length$meters = function (numMeters) {
+	return $ianmackenzie$elm_units$Quantity$Quantity(numMeters);
+};
+var $ianmackenzie$elm_units$Length$millimeters = function (numMillimeters) {
+	return $ianmackenzie$elm_units$Length$meters(0.001 * numMillimeters);
+};
+var $elm$core$Basics$pi = _Basics_pi;
+var $elm$core$Basics$pow = _Basics_pow;
+var $w0rm$elm_physics$Internal$Matrix3$sphereInertia = F2(
+	function (m, radius) {
+		var i = (((m * 2) / 5) * radius) * radius;
+		return {m11: i, m12: 0, m13: 0, m21: 0, m22: i, m23: 0, m31: 0, m32: 0, m33: i};
+	});
+var $w0rm$elm_physics$Shapes$Sphere$atOrigin = function (radius) {
+	var volume = ((4 / 3) * $elm$core$Basics$pi) * A2($elm$core$Basics$pow, radius, 3);
+	return {
+		inertia: A2($w0rm$elm_physics$Internal$Matrix3$sphereInertia, volume, radius),
+		position: $w0rm$elm_physics$Internal$Vector3$zero,
+		radius: radius,
+		volume: volume
+	};
+};
+var $ianmackenzie$elm_geometry$Sphere3d$centerPoint = function (_v0) {
+	var properties = _v0.a;
+	return properties.centerPoint;
+};
+var $ianmackenzie$elm_geometry$Sphere3d$radius = function (_v0) {
+	var properties = _v0.a;
+	return properties.radius;
+};
+var $ianmackenzie$elm_geometry$Point3d$toMeters = function (_v0) {
+	var pointCoordinates = _v0.a;
+	return pointCoordinates;
+};
+var $w0rm$elm_physics$Physics$Shape$sphere = function (sphere3d) {
+	var radius = $ianmackenzie$elm_units$Length$inMeters(
+		$ianmackenzie$elm_geometry$Sphere3d$radius(sphere3d));
+	var origin = $ianmackenzie$elm_geometry$Point3d$toMeters(
+		$ianmackenzie$elm_geometry$Sphere3d$centerPoint(sphere3d));
+	return $w0rm$elm_physics$Internal$Shape$Protected(
+		$w0rm$elm_physics$Internal$Shape$Sphere(
+			A2(
+				$w0rm$elm_physics$Shapes$Sphere$placeIn,
+				$w0rm$elm_physics$Internal$Transform3d$atPoint(origin),
+				$w0rm$elm_physics$Shapes$Sphere$atOrigin(radius))));
+};
+var $w0rm$elm_physics$Physics$Body$sphere = function (sphere3d) {
+	return $w0rm$elm_physics$Physics$Body$compound(
+		_List_fromArray(
+			[
+				$w0rm$elm_physics$Physics$Shape$sphere(sphere3d)
+			]));
+};
+var $w0rm$elm_physics$Physics$Body$Static = {$: 'Static'};
+var $w0rm$elm_physics$Physics$Body$static = $w0rm$elm_physics$Physics$Body$Static;
+var $w0rm$elm_physics$Physics$Body$withBehavior = F2(
+	function (behavior, _v0) {
+		var body = _v0.a;
+		if (behavior.$ === 'Dynamic') {
+			var mass_ = behavior.a;
+			var _v2 = body.shapes;
+			if (!_v2.b) {
+				return $w0rm$elm_physics$Internal$Body$Protected(body);
+			} else {
+				if (!_v2.b.b) {
+					var shape = _v2.a;
+					if (shape.$ === 'Plane') {
+						return $w0rm$elm_physics$Internal$Body$Protected(body);
+					} else {
+						return $w0rm$elm_physics$Internal$Body$Protected(
+							$w0rm$elm_physics$Internal$Body$updateMassProperties(
+								_Utils_update(
+									body,
+									{mass: mass_})));
+					}
+				} else {
+					return $w0rm$elm_physics$Internal$Body$Protected(
+						$w0rm$elm_physics$Internal$Body$updateMassProperties(
+							_Utils_update(
+								body,
+								{mass: mass_})));
+				}
+			}
+		} else {
+			return $w0rm$elm_physics$Internal$Body$Protected(
+				$w0rm$elm_physics$Internal$Body$updateMassProperties(
+					_Utils_update(
+						body,
+						{mass: 0})));
+		}
+	});
+var $author$project$Main$poop = A2(
+	$w0rm$elm_physics$Physics$Body$withBehavior,
+	$w0rm$elm_physics$Physics$Body$static,
+	A2(
+		$w0rm$elm_physics$Physics$Body$sphere,
+		A2(
+			$ianmackenzie$elm_geometry$Sphere3d$atPoint,
+			A3($ianmackenzie$elm_geometry$Point3d$meters, 1, 1, 1),
+			$ianmackenzie$elm_units$Length$millimeters(100)),
+		$author$project$Main$Poop));
 var $author$project$Main$Toilet = {$: 'Toilet'};
 var $ianmackenzie$elm_geometry$Geometry$Types$Frame3d = function (a) {
 	return {$: 'Frame3d', a: a};
@@ -9764,14 +9894,6 @@ var $w0rm$elm_physics$Physics$Shape$block = function (block3d) {
 var $ianmackenzie$elm_geometry$Geometry$Types$Block3d = function (a) {
 	return {$: 'Block3d', a: a};
 };
-var $elm$core$Basics$abs = function (n) {
-	return (n < 0) ? (-n) : n;
-};
-var $ianmackenzie$elm_units$Quantity$abs = function (_v0) {
-	var value = _v0.a;
-	return $ianmackenzie$elm_units$Quantity$Quantity(
-		$elm$core$Basics$abs(value));
-};
 var $elm$core$Basics$ge = _Utils_ge;
 var $ianmackenzie$elm_units$Quantity$greaterThanOrEqualTo = F2(
 	function (_v0, _v1) {
@@ -9854,12 +9976,6 @@ var $ianmackenzie$elm_geometry$Block3d$from = F2(
 			$ianmackenzie$elm_geometry$Point3d$yCoordinate(p2),
 			$ianmackenzie$elm_geometry$Point3d$zCoordinate(p2));
 	});
-var $ianmackenzie$elm_units$Length$meters = function (numMeters) {
-	return $ianmackenzie$elm_units$Quantity$Quantity(numMeters);
-};
-var $ianmackenzie$elm_units$Length$millimeters = function (numMillimeters) {
-	return $ianmackenzie$elm_units$Length$meters(0.001 * numMillimeters);
-};
 var $ianmackenzie$elm_geometry$Point3d$millimeters = F3(
 	function (x, y, z) {
 		return A3(
@@ -9875,44 +9991,6 @@ var $author$project$Main$skretModel = _List_fromArray(
 		A3($ianmackenzie$elm_geometry$Point3d$millimeters, -50, -50, -50),
 		A3($ianmackenzie$elm_geometry$Point3d$millimeters, 50, 50, 50))
 	]);
-var $w0rm$elm_physics$Physics$Body$Static = {$: 'Static'};
-var $w0rm$elm_physics$Physics$Body$static = $w0rm$elm_physics$Physics$Body$Static;
-var $w0rm$elm_physics$Physics$Body$withBehavior = F2(
-	function (behavior, _v0) {
-		var body = _v0.a;
-		if (behavior.$ === 'Dynamic') {
-			var mass_ = behavior.a;
-			var _v2 = body.shapes;
-			if (!_v2.b) {
-				return $w0rm$elm_physics$Internal$Body$Protected(body);
-			} else {
-				if (!_v2.b.b) {
-					var shape = _v2.a;
-					if (shape.$ === 'Plane') {
-						return $w0rm$elm_physics$Internal$Body$Protected(body);
-					} else {
-						return $w0rm$elm_physics$Internal$Body$Protected(
-							$w0rm$elm_physics$Internal$Body$updateMassProperties(
-								_Utils_update(
-									body,
-									{mass: mass_})));
-					}
-				} else {
-					return $w0rm$elm_physics$Internal$Body$Protected(
-						$w0rm$elm_physics$Internal$Body$updateMassProperties(
-							_Utils_update(
-								body,
-								{mass: mass_})));
-				}
-			}
-		} else {
-			return $w0rm$elm_physics$Internal$Body$Protected(
-				$w0rm$elm_physics$Internal$Body$updateMassProperties(
-					_Utils_update(
-						body,
-						{mass: 0})));
-		}
-	});
 var $author$project$Main$skret = A2(
 	$w0rm$elm_physics$Physics$Body$withBehavior,
 	$w0rm$elm_physics$Physics$Body$static,
@@ -9942,12 +10020,15 @@ var $author$project$Main$initialWorld = A2(
 	$w0rm$elm_physics$Physics$Body$plane($author$project$Main$Floor),
 	A2(
 		$w0rm$elm_physics$Physics$World$add,
-		$author$project$Main$skret,
-		A3(
-			$w0rm$elm_physics$Physics$World$withGravity,
-			$ianmackenzie$elm_units$Acceleration$gees(1),
-			$ianmackenzie$elm_geometry$Direction3d$negativeZ,
-			$w0rm$elm_physics$Physics$World$empty)));
+		$author$project$Main$poop,
+		A2(
+			$w0rm$elm_physics$Physics$World$add,
+			$author$project$Main$skret,
+			A3(
+				$w0rm$elm_physics$Physics$World$withGravity,
+				$ianmackenzie$elm_units$Acceleration$gees(1),
+				$ianmackenzie$elm_geometry$Direction3d$negativeZ,
+				$w0rm$elm_physics$Physics$World$empty))));
 var $ianmackenzie$elm_geometry$Point3d$origin = $ianmackenzie$elm_geometry$Geometry$Types$Point3d(
 	{x: 0, y: 0, z: 0});
 var $ianmackenzie$elm_geometry$Direction3d$x = $ianmackenzie$elm_geometry$Direction3d$positiveX;
@@ -10830,10 +10911,6 @@ var $elm$core$List$isEmpty = function (xs) {
 	} else {
 		return false;
 	}
-};
-var $ianmackenzie$elm_geometry$Point3d$toMeters = function (_v0) {
-	var pointCoordinates = _v0.a;
-	return pointCoordinates;
 };
 var $ianmackenzie$elm_3d_scene$Scene3d$Mesh$edgeKey = F2(
 	function (firstPoint, secondPoint) {
@@ -12463,7 +12540,6 @@ var $author$project$Main$subscriptions = function (_v0) {
 			]));
 };
 var $author$project$Main$Mouse = {$: 'Mouse'};
-var $elm$core$Basics$pi = _Basics_pi;
 var $ianmackenzie$elm_units$Angle$radians = function (numRadians) {
 	return $ianmackenzie$elm_units$Quantity$Quantity(numRadians);
 };
@@ -12652,11 +12728,6 @@ var $ianmackenzie$elm_3d_camera$Viewpoint3d$lookAt = function (_arguments) {
 		}
 	}
 };
-var $ianmackenzie$elm_geometry$Point3d$meters = F3(
-	function (x, y, z) {
-		return $ianmackenzie$elm_geometry$Geometry$Types$Point3d(
-			{x: x, y: y, z: z});
-	});
 var $ianmackenzie$elm_3d_camera$Camera3d$Types$Camera3d = function (a) {
 	return {$: 'Camera3d', a: a};
 };
@@ -12990,6 +13061,7 @@ var $w0rm$elm_physics$Physics$World$keepIf = F2(
 					freeIds: _Utils_ap(removedIds, world.freeIds)
 				}));
 	});
+var $elm$core$Debug$log = _Debug_log;
 var $w0rm$elm_physics$Internal$Transform3d$moveTo = F2(
 	function (newOrigin, _v0) {
 		var localOrientation = _v0.b;
@@ -14916,7 +14988,6 @@ var $w0rm$elm_physics$Internal$Transform3d$normalize = function (_v0) {
 		localOrigin,
 		A4($w0rm$elm_physics$Internal$Transform3d$Orientation3d, x / len, y / len, z / len, w / len));
 };
-var $elm$core$Basics$pow = _Basics_pow;
 var $w0rm$elm_physics$Internal$Transform3d$rotateBy = F2(
 	function (_v0, _v1) {
 		var x = _v0.x;
@@ -15257,7 +15328,8 @@ var $author$project$Main$update = F2(
 				return _Utils_update(
 					model,
 					{
-						poopModel: $elm$core$Result$toMaybe(a)
+						poopModel: $elm$core$Result$toMaybe(
+							A2($elm$core$Debug$log, 'b', a))
 					});
 		}
 	});
@@ -15282,21 +15354,6 @@ var $w0rm$elm_physics$Physics$World$bodies = function (_v0) {
 		_List_Nil,
 		world.bodies);
 };
-var $ianmackenzie$elm_geometry$Geometry$Types$Sphere3d = function (a) {
-	return {$: 'Sphere3d', a: a};
-};
-var $ianmackenzie$elm_geometry$Sphere3d$withRadius = F2(
-	function (givenRadius, givenCenterPoint) {
-		return $ianmackenzie$elm_geometry$Geometry$Types$Sphere3d(
-			{
-				centerPoint: givenCenterPoint,
-				radius: $ianmackenzie$elm_units$Quantity$abs(givenRadius)
-			});
-	});
-var $ianmackenzie$elm_geometry$Sphere3d$atPoint = F2(
-	function (givenCenterPoint, givenRadius) {
-		return A2($ianmackenzie$elm_geometry$Sphere3d$withRadius, givenRadius, givenCenterPoint);
-	});
 var $ianmackenzie$elm_geometry$Sphere3d$atOrigin = function (givenRadius) {
 	return A2($ianmackenzie$elm_geometry$Sphere3d$atPoint, $ianmackenzie$elm_geometry$Point3d$origin, givenRadius);
 };
@@ -17598,14 +17655,6 @@ var $ianmackenzie$elm_3d_scene$Scene3d$quad = F5(
 	function (givenMaterial, p1, p2, p3, p4) {
 		return A7($ianmackenzie$elm_3d_scene$Scene3d$Entity$quad, true, false, givenMaterial, p1, p2, p3, p4);
 	});
-var $ianmackenzie$elm_geometry$Sphere3d$centerPoint = function (_v0) {
-	var properties = _v0.a;
-	return properties.centerPoint;
-};
-var $ianmackenzie$elm_geometry$Sphere3d$radius = function (_v0) {
-	var properties = _v0.a;
-	return properties.radius;
-};
 var $elm$core$Basics$cos = _Basics_cos;
 var $ianmackenzie$elm_units$Angle$cos = function (_v0) {
 	var angle = _v0.a;
@@ -17956,54 +18005,55 @@ var $ianmackenzie$elm_3d_scene$Scene3d$sphereWithShadow = F2(
 		return A4($ianmackenzie$elm_3d_scene$Scene3d$Entity$sphere, true, true, givenMaterial, givenSphere);
 	});
 var $avh4$elm_color$Color$white = A4($avh4$elm_color$Color$RgbaSpace, 255 / 255, 255 / 255, 255 / 255, 1.0);
-var $author$project$Main$bodyToEntity = function (body) {
-	var id = $w0rm$elm_physics$Physics$Body$data(body);
-	var frame = $w0rm$elm_physics$Physics$Body$frame(body);
-	return A2(
-		$ianmackenzie$elm_3d_scene$Scene3d$placeIn,
-		frame,
-		function () {
-			switch (id.$) {
-				case 'Mouse':
-					return A2(
-						$ianmackenzie$elm_3d_scene$Scene3d$sphere,
-						$ianmackenzie$elm_3d_scene$Scene3d$Material$matte($avh4$elm_color$Color$white),
-						$ianmackenzie$elm_geometry$Sphere3d$atOrigin(
-							$ianmackenzie$elm_units$Length$millimeters(20)));
-				case 'Poop':
-					return $ianmackenzie$elm_3d_scene$Scene3d$group(
-						A2(
-							$elm$core$List$map,
-							$ianmackenzie$elm_3d_scene$Scene3d$blockWithShadow(
-								$ianmackenzie$elm_3d_scene$Scene3d$Material$nonmetal(
-									{baseColor: $avh4$elm_color$Color$white, roughness: 0.25})),
-							$author$project$Main$poopBlocks));
-				case 'Floor':
-					return A5(
-						$ianmackenzie$elm_3d_scene$Scene3d$quad,
-						$ianmackenzie$elm_3d_scene$Scene3d$Material$matte($avh4$elm_color$Color$darkCharcoal),
-						A3($ianmackenzie$elm_geometry$Point3d$meters, -15, -15, 0),
-						A3($ianmackenzie$elm_geometry$Point3d$meters, -15, 15, 0),
-						A3($ianmackenzie$elm_geometry$Point3d$meters, 15, 15, 0),
-						A3($ianmackenzie$elm_geometry$Point3d$meters, 15, -15, 0));
-				case 'Toilet':
-					return A2(
-						$ianmackenzie$elm_3d_scene$Scene3d$sphereWithShadow,
-						$ianmackenzie$elm_3d_scene$Scene3d$Material$nonmetal(
-							{baseColor: $avh4$elm_color$Color$blue, roughness: 0.1}),
-						$ianmackenzie$elm_geometry$Sphere3d$atOrigin(
-							$ianmackenzie$elm_units$Length$millimeters(20)));
-				default:
-					return $ianmackenzie$elm_3d_scene$Scene3d$group(
-						A2(
-							$elm$core$List$map,
-							$ianmackenzie$elm_3d_scene$Scene3d$blockWithShadow(
-								$ianmackenzie$elm_3d_scene$Scene3d$Material$nonmetal(
-									{baseColor: $avh4$elm_color$Color$white, roughness: 0.25})),
-							$author$project$Main$poopBlocks));
-			}
-		}());
-};
+var $author$project$Main$bodyToEntity = F2(
+	function (m, body) {
+		var id = $w0rm$elm_physics$Physics$Body$data(body);
+		var frame = $w0rm$elm_physics$Physics$Body$frame(body);
+		return A2(
+			$ianmackenzie$elm_3d_scene$Scene3d$placeIn,
+			frame,
+			function () {
+				switch (id.$) {
+					case 'Mouse':
+						return A2(
+							$ianmackenzie$elm_3d_scene$Scene3d$sphere,
+							$ianmackenzie$elm_3d_scene$Scene3d$Material$matte($avh4$elm_color$Color$white),
+							$ianmackenzie$elm_geometry$Sphere3d$atOrigin(
+								$ianmackenzie$elm_units$Length$millimeters(20)));
+					case 'Poop':
+						return $ianmackenzie$elm_3d_scene$Scene3d$group(
+							A2(
+								$elm$core$List$map,
+								$ianmackenzie$elm_3d_scene$Scene3d$blockWithShadow(
+									$ianmackenzie$elm_3d_scene$Scene3d$Material$nonmetal(
+										{baseColor: $avh4$elm_color$Color$white, roughness: 0.25})),
+								$author$project$Main$poopBlocks));
+					case 'Floor':
+						return A5(
+							$ianmackenzie$elm_3d_scene$Scene3d$quad,
+							$ianmackenzie$elm_3d_scene$Scene3d$Material$matte($avh4$elm_color$Color$darkCharcoal),
+							A3($ianmackenzie$elm_geometry$Point3d$meters, -15, -15, 0),
+							A3($ianmackenzie$elm_geometry$Point3d$meters, -15, 15, 0),
+							A3($ianmackenzie$elm_geometry$Point3d$meters, 15, 15, 0),
+							A3($ianmackenzie$elm_geometry$Point3d$meters, 15, -15, 0));
+					case 'Toilet':
+						return A2(
+							$ianmackenzie$elm_3d_scene$Scene3d$sphereWithShadow,
+							$ianmackenzie$elm_3d_scene$Scene3d$Material$nonmetal(
+								{baseColor: $avh4$elm_color$Color$blue, roughness: 0.1}),
+							$ianmackenzie$elm_geometry$Sphere3d$atOrigin(
+								$ianmackenzie$elm_units$Length$millimeters(20)));
+					default:
+						return $ianmackenzie$elm_3d_scene$Scene3d$group(
+							A2(
+								$elm$core$List$map,
+								$ianmackenzie$elm_3d_scene$Scene3d$blockWithShadow(
+									$ianmackenzie$elm_3d_scene$Scene3d$Material$nonmetal(
+										{baseColor: $avh4$elm_color$Color$white, roughness: 0.25})),
+								$author$project$Main$poopBlocks));
+				}
+			}());
+	});
 var $elm$json$Json$Decode$float = _Json_decodeFloat;
 var $ianmackenzie$elm_geometry$Geometry$Types$Point2d = function (a) {
 	return {$: 'Point2d', a: a};
@@ -18225,8 +18275,8 @@ var $author$project$Main$decodeMouseRay = F4(
 								}),
 							A2($ianmackenzie$elm_geometry$Point2d$pixels, x, y)));
 				}),
-			A2($elm$json$Json$Decode$field, 'pageX', $elm$json$Json$Decode$float),
-			A2($elm$json$Json$Decode$field, 'pageY', $elm$json$Json$Decode$float));
+			A2($elm$json$Json$Decode$field, 'offsetX', $elm$json$Json$Decode$float),
+			A2($elm$json$Json$Decode$field, 'offsetY', $elm$json$Json$Decode$float));
 	});
 var $elm$html$Html$div = _VirtualDom_node('div');
 var $ianmackenzie$elm_units$Pixels$int = function (numPixels) {
@@ -19521,6 +19571,8 @@ var $ianmackenzie$elm_3d_scene$Scene3d$sunny = function (_arguments) {
 			whiteBalance: $ianmackenzie$elm_3d_scene$Scene3d$Light$daylight
 		});
 };
+var $elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
+var $elm$html$Html$text = $elm$virtual_dom$VirtualDom$text;
 var $ianmackenzie$elm_units$Pixels$toFloat = function (_v0) {
 	var numPixels = _v0.a;
 	return numPixels;
@@ -19542,52 +19594,66 @@ var $author$project$Main$view = function (_v0) {
 	var width = _v0.width;
 	var height = _v0.height;
 	var stopped = _v0.stopped;
-	if (stopped) {
+	var poopModel = _v0.poopModel;
+	var _v1 = _Utils_Tuple2(stopped, poopModel);
+	if (_v1.a) {
 		return A2($elm$html$Html$div, _List_Nil, _List_Nil);
 	} else {
-		return A2(
-			$elm$html$Html$div,
-			_List_fromArray(
-				[
-					A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
-					A2($elm$html$Html$Attributes$style, 'left', '0'),
-					A2($elm$html$Html$Attributes$style, 'top', '0'),
-					A2(
-					$elm$html$Html$Events$on,
-					'mousedown',
-					A4($author$project$Main$decodeMouseRay, $author$project$Main$camera, width, height, $author$project$Main$MouseDown)),
-					A2(
-					$elm$html$Html$Events$on,
-					'mousemove',
-					A4($author$project$Main$decodeMouseRay, $author$project$Main$camera, width, height, $author$project$Main$MouseMove)),
-					$elm$html$Html$Events$onMouseUp($author$project$Main$MouseUp)
-				]),
-			_List_fromArray(
-				[
-					$ianmackenzie$elm_3d_scene$Scene3d$sunny(
-					{
-						background: $ianmackenzie$elm_3d_scene$Scene3d$transparentBackground,
-						camera: $author$project$Main$camera,
-						clipDepth: $ianmackenzie$elm_units$Length$meters(0.1),
-						dimensions: _Utils_Tuple2(
-							$ianmackenzie$elm_units$Pixels$int(
-								$elm$core$Basics$round(
-									$ianmackenzie$elm_units$Pixels$toFloat(width))),
-							$ianmackenzie$elm_units$Pixels$int(
-								$elm$core$Basics$round(
-									$ianmackenzie$elm_units$Pixels$toFloat(height)))),
-						entities: A2(
-							$elm$core$List$map,
-							$author$project$Main$bodyToEntity,
-							$w0rm$elm_physics$Physics$World$bodies(world)),
-						shadows: true,
-						sunlightDirection: A2(
-							$ianmackenzie$elm_geometry$Direction3d$xyZ,
-							$ianmackenzie$elm_units$Angle$degrees(135),
-							$ianmackenzie$elm_units$Angle$degrees(-60)),
-						upDirection: $ianmackenzie$elm_geometry$Direction3d$z
-					})
-				]));
+		if (_v1.b.$ === 'Nothing') {
+			var _v2 = _v1.b;
+			return A2(
+				$elm$html$Html$div,
+				_List_Nil,
+				_List_fromArray(
+					[
+						$elm$html$Html$text('Loadin...')
+					]));
+		} else {
+			var m = _v1.b.a;
+			return A2(
+				$elm$html$Html$div,
+				_List_fromArray(
+					[
+						A2($elm$html$Html$Attributes$style, 'position', 'fixed'),
+						A2($elm$html$Html$Attributes$style, 'left', '0'),
+						A2($elm$html$Html$Attributes$style, 'top', '10vh'),
+						A2(
+						$elm$html$Html$Events$on,
+						'mousedown',
+						A4($author$project$Main$decodeMouseRay, $author$project$Main$camera, width, height, $author$project$Main$MouseDown)),
+						A2(
+						$elm$html$Html$Events$on,
+						'mousemove',
+						A4($author$project$Main$decodeMouseRay, $author$project$Main$camera, width, height, $author$project$Main$MouseMove)),
+						$elm$html$Html$Events$onMouseUp($author$project$Main$MouseUp)
+					]),
+				_List_fromArray(
+					[
+						$ianmackenzie$elm_3d_scene$Scene3d$sunny(
+						{
+							background: $ianmackenzie$elm_3d_scene$Scene3d$transparentBackground,
+							camera: $author$project$Main$camera,
+							clipDepth: $ianmackenzie$elm_units$Length$meters(0.1),
+							dimensions: _Utils_Tuple2(
+								$ianmackenzie$elm_units$Pixels$int(
+									$elm$core$Basics$round(
+										$ianmackenzie$elm_units$Pixels$toFloat(width))),
+								$ianmackenzie$elm_units$Pixels$int(
+									$elm$core$Basics$round(
+										$ianmackenzie$elm_units$Pixels$toFloat(height)))),
+							entities: A2(
+								$elm$core$List$map,
+								$author$project$Main$bodyToEntity(m),
+								$w0rm$elm_physics$Physics$World$bodies(world)),
+							shadows: true,
+							sunlightDirection: A2(
+								$ianmackenzie$elm_geometry$Direction3d$xyZ,
+								$ianmackenzie$elm_units$Angle$degrees(135),
+								$ianmackenzie$elm_units$Angle$degrees(-60)),
+							upDirection: $ianmackenzie$elm_geometry$Direction3d$z
+						})
+					]));
+		}
 	}
 };
 var $author$project$Main$main = $elm$browser$Browser$element(

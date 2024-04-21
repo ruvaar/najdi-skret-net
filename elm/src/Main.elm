@@ -107,7 +107,7 @@ meshes b =
                 mesh
                 |> Body.withBehavior b
         )
-        (Obj.Decode.object "convex" (Obj.Decode.trianglesIn bodyFrame))
+        -- (Obj.Decode.object "convex" (Obj.Decode.trianglesIn bodyFrame))
         (Obj.Decode.object "mesh" meshWithShadow)
 
 
@@ -160,6 +160,7 @@ initialWorld =
     World.empty
         |> World.withGravity (Acceleration.gees 1) Direction3d.negativeZ
         |> World.add skret
+        |> World.add poop
         |> World.add (Body.plane Floor)
 
 
@@ -187,6 +188,12 @@ skretModel =
          (Point3d.millimeters 50 50 50)
     ]
 
+poop: Body Id
+poop =
+    Body.sphere (Sphere3d.atPoint (Point3d.meters 1 1 1) (Length.millimeters 100)) Poop
+        |> Body.withBehavior Body.static
+
+
 
 camera : Camera3d Meters WorldCoordinates
 camera =
@@ -202,15 +209,17 @@ camera =
 
 
 view : Model -> Html Msg
-view { world, width, height, stopped} =
-    case stopped of
-        True ->
+view { world, width, height, stopped, poopModel} =
+    case (stopped, poopModel) of
+        (True, _) ->
             Html.div [] []
-        False ->
+        (_, Nothing) ->
+            Html.div [] [Html.text "Loadin..."]
+        (False, Just m) ->
             Html.div
-                [ Html.Attributes.style "position" "absolute"
+                [ Html.Attributes.style "position" "fixed"
                 , Html.Attributes.style "left" "0"
-                , Html.Attributes.style "top" "0"
+                , Html.Attributes.style "top" "10vh"
                 , Html.Events.on "mousedown" (decodeMouseRay camera width height MouseDown)
                 , Html.Events.on "mousemove" (decodeMouseRay camera width height MouseMove)
                 , Html.Events.onMouseUp MouseUp
@@ -226,13 +235,13 @@ view { world, width, height, stopped} =
                         )
                     , background = Scene3d.transparentBackground
                     , clipDepth = Length.meters 0.1
-                    , entities = List.map bodyToEntity (World.bodies world)
+                    , entities = List.map (bodyToEntity m) (World.bodies world)
                     }
                 ]
 
 
-bodyToEntity : (Body Id) -> Scene3d.Entity WorldCoordinates
-bodyToEntity body =
+bodyToEntity : (Body Meshy) -> (Body Id) ->  Scene3d.Entity WorldCoordinates
+bodyToEntity m body =
     let
         frame =
             Body.frame body
@@ -383,7 +392,7 @@ update msg model =
             Stop s ->
                 {model | stopped = s}
             LoadedPoop a ->
-                {model | poopModel = a
+                {model | poopModel = Debug.log "b" a
                         |> Result.toMaybe}
             -- LoadedTexture rez ->
             --     {model
@@ -402,7 +411,10 @@ decodeMouseRay :
     -> Json.Decode.Decoder msg
 decodeMouseRay camera3d width height rayToMsg =
     Json.Decode.map2
-        (\x y ->
+        (\x y  ->
+             -- let
+             --    c = Debug.toString p |> Debug.log 0
+             -- in
             rayToMsg
                 (Camera3d.ray
                     camera3d
@@ -416,5 +428,5 @@ decodeMouseRay camera3d width height rayToMsg =
                     (Point2d.pixels x y)
                 )
         )
-        (Json.Decode.field "pageX" Json.Decode.float)
-        (Json.Decode.field "pageY" Json.Decode.float)
+        (Json.Decode.field "offsetX" Json.Decode.float)
+        (Json.Decode.field "offsetY" Json.Decode.float)
