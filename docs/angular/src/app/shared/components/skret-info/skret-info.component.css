@@ -5,3 +5,21 @@
     width:20%;
     height: 90vh;
 }
+
+.hide-btn {
+    position: fixed;
+    top: 10vh;
+    right: 0;
+    z-index: 1000;
+}
+
+.hide-btn:hover {
+    cursor: pointer;
+}
+
+.navigate-btn{
+    position: fixed;
+    top: 10vh;
+    left: 0;
+    z-index: 1000;
+}
