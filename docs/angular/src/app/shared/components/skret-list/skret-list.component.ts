@@ -34,4 +34,14 @@ export class SkretListComponent implements OnInit{
   getToilets(): void {
     this.appDataService.getToilets().subscribe(skreti => this.skreti = skreti);
   }
+
+  
+
+  navigateToGoogleMaps(destinationLat: Number,destinationLng: Number): void {
+    // Google Maps URL with the destination's latitude and longitude
+    const googleMapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${destinationLat},${destinationLng}&travelmode=walking`;
+
+    // Open the URL in a new tab/window
+    window.open(googleMapsUrl, '_blank');
+  }
 }
