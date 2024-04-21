@@ -16795,7 +16795,7 @@ var $author$project$Main$view = function (_v0) {
 			[
 				A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
 				A2($elm$html$Html$Attributes$style, 'left', '0'),
-				A2($elm$html$Html$Attributes$style, 'top', '0'),
+				A2($elm$html$Html$Attributes$style, 'top', '10vh'),
 				A2(
 				$elm$html$Html$Events$on,
 				'mousedown',

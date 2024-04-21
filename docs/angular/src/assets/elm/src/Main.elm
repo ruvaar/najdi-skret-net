@@ -136,7 +136,7 @@ view { world, width, height } =
     Html.div
         [ Html.Attributes.style "position" "absolute"
         , Html.Attributes.style "left" "0"
-        , Html.Attributes.style "top" "0"
+        , Html.Attributes.style "top" "10vh"
         , Html.Events.on "mousedown" (decodeMouseRay camera width height MouseDown)
         , Html.Events.on "mousemove" (decodeMouseRay camera width height MouseMove)
         , Html.Events.onMouseUp MouseUp
