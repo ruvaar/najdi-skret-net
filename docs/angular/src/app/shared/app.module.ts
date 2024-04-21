@@ -16,6 +16,7 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatInputModule } from '@angular/material/input';
 import { MapsComponent } from './components/maps/maps.component';
 import { SkretListComponent } from './components/skret-list/skret-list.component';
+import { SkretInfoComponent } from './components/skret-info/skret-info.component';
 
 @NgModule({
   declarations: [
@@ -26,6 +27,7 @@ import { SkretListComponent } from './components/skret-list/skret-list.component
     RegistracijaComponent,
     SkretListComponent,
     MapsComponent,
+    SkretInfoComponent,
   ],
   imports: [
     BrowserModule,

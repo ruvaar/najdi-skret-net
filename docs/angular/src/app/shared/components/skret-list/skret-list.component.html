@@ -14,8 +14,8 @@
         <span *ngFor="let i of [1, 2, 3, 4, 5]" class="fa-star" [ngClass]="{'fa-solid': i <= skret.avgRating, 'fa-regular': i > skret.avgRating}"></span>
          ({{skret.numRatings}}) <br>
         </div>
-        Petkovškovo nabrežje 12 <br>
         Ljubljana
+        <button (click)="navigateToGoogleMaps(skret.lat, skret.lon)">Go to Google Maps</button>
       </div>
     </div>
   </div>
