@@ -5,13 +5,136 @@ body {
   background-color: #f9f9fb;
 }
 
-
-/* Add more styles as necessary */
-@media handheld and (max-width: 768px) {
-  .donator-rect {
-    padding: 20px 0px 20px 0px;
-  }
-  .donator-rect h3 {
-    font-size: 30px;
-  }
+.najdiSkret {
+  color: black !important;
+  font-size: 40px;
+  font-family: 'Courier New', Courier, monospace;
 }
+.logo-link {
+  text-decoration: none;
+}
+
+.navbar-text {
+  color: #576b53;
+  margin: 0px 0px 0px 10px;
+}
+.top-menu {
+  background-color: #faf0e6;
+  padding: 10px 50px 10px 50px;
+}
+.home_banner_area {
+  position: relative;
+  z-index: 1;
+  min-height: 754px;
+}
+
+.home_banner_area .banner_inner {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  min-height: 754px;
+}
+.home_banner_area .banner_inner {
+  width: 100%;
+  background: url(../img/poplave2.jpg);
+  background-position: 50%;
+  background-repeat: repeat-x;
+  background-size: cover;
+  background-attachment: scroll;
+  position: relative;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 100%;
+  bottom: 0;
+  z-index: -1;
+}
+.home_banner_area .banner_inner .banner_content {
+  color: #fff;
+}
+.home_banner_area .banner_inner .banner_content h5 {
+  text-transform: uppercase;
+  font-family: "Poppins", sans-serif;
+  font-size: 14px;
+  font-weight: normal;
+  margin-bottom: 15px;
+}
+
+.home_banner_area .banner_inner .banner_content h3 {
+  font-size: 70px;
+  font-family: Archivo, sans-serif;
+  font-weight: 500;
+  margin-bottom: 20px;
+}
+
+.donation_area {
+  margin-top: -90px;
+}
+
+.dontation_item {
+  color: rgb(255, 255, 255);
+  padding: 20px;
+  margin: 30px;
+  border-radius: 8px;
+}
+.dontation_item h3 {
+  text-align: center;
+  font-family: Changa One, Impact, sans-serif;
+  font-size: 40px;
+}
+
+.blue {
+  background: #5e6a6e;
+}
+
+.green {
+  background: #576b53;
+}
+
+
+.activeRouter {
+  font-weight: bold;
+}
+
+.home-link {
+  font-weight: normal;
+}
+
+.button-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.w-input {
+  border-radius: 4px;
+}
+.form {
+  border-radius: 10px;
+}
+
+.submit-button:hover {
+  background-color: #2a9662;
+}
+.password-container {
+  position: relative;
+}
+.fas.fa-eye,
+.fas.fa-eye-slash {
+  position: absolute;
+  cursor: pointer;
+  /* Adjust these values as needed to position the eye icon correctly */
+  right: 20px;
+  top: 65px;
+}
+
+.footer-container {
+  background-color: #faf0e6;
+  padding: 50px 0px 50px 20px;
+}
+
+.FAQ:hover {
+  cursor: pointer;
+}
+
+
