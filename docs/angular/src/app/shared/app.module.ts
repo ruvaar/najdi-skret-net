@@ -17,6 +17,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MapsComponent } from './components/maps/maps.component';
 import { SkretListComponent } from './components/skret-list/skret-list.component';
 import { ShitGameComponent } from './components/shit-game/shit-game.component';
+import { SkretInfoComponent } from './components/skret-info/skret-info.component';
 
 @NgModule({
   declarations: [
@@ -28,6 +29,7 @@ import { ShitGameComponent } from './components/shit-game/shit-game.component';
     SkretListComponent,
     MapsComponent,
     ShitGameComponent,
+    SkretInfoComponent,
   ],
   imports: [
     BrowserModule,

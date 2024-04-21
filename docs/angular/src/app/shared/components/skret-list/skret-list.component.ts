@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Skret} from '../../classes/skret';
+import { AppDataService } from '../../services/app-data.service';
+import { HttpClientModule } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-skret-list',
@@ -8,22 +11,27 @@ import { Skret} from '../../classes/skret';
 })
 export class SkretListComponent implements OnInit{
 
-  constructor() { }
+  constructor(
+    private appDataService: AppDataService,
+    private http: HttpClient
+  ) {}
+
   skreti!: Skret[];
+  filteredSkreti!: Skret[];
   selectedSkret!: Skret;
 
   sidebarCollapsed = false;
 
   toggleSidebar() {
     this.sidebarCollapsed = !this.sidebarCollapsed;
+    
   }
 
   ngOnInit(): void {
-    this.skreti = [
-      {id: '1', location: 'Kopaonik', avgRating: 3, numRatings: 10, lat: 43.2951, lon: 20.7765, tags: {tag1: 'tag1', tag2: 'tag2'}},
-      {id: '2', location: 'Zlatibor', avgRating: 4, numRatings: 5, lat: 43.7247, lon: 19.695, tags: {tag1: 'tag1', tag2: 'tag2'}},
-    ];
+    this.getToilets();
   }
 
-
+  getToilets(): void {
+    this.appDataService.getToilets().subscribe(skreti => this.skreti = skreti);
+  }
 }
