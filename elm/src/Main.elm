@@ -41,6 +41,7 @@ import Obj.Decode exposing (Decoder, ObjCoordinates)
 import Frame3d exposing (Frame3d)
 import Physics.Coordinates exposing (BodyCoordinates)
 import Vector3d
+import Scene3d.Material as Material
 
 bodyFrame : Frame3d Meters BodyCoordinates { defines : ObjCoordinates }
 bodyFrame =
@@ -158,9 +159,19 @@ skret =
 skretModel : List (Block3d Meters BodyCoordinates)
 skretModel =
     [Block3d.from
-         (Point3d.millimeters -50 -50 -50)
-         (Point3d.millimeters 50 50 50)
+         (Point3d.meters -1 1 1)
+         (Point3d.meters 1 0.8 0)
+    , Block3d.from
+         (Point3d.meters -1 -1 1)
+         (Point3d.meters 1 -0.8 0)
+    , Block3d.from
+         (Point3d.meters -1 1 1)
+         (Point3d.meters -0.8 -1 0)
+    , Block3d.from
+         (Point3d.meters 1 1 1)
+         (Point3d.meters 0.8 -1 0)
     ]
+    |> List.map (\n -> n |> Block3d.scaleAbout (Point3d.origin) 0.5)
 
 poop: Body Id
 poop =
@@ -251,12 +262,16 @@ bodyToEntity m body =
                     (Point3d.meters 15 15 0)
                     (Point3d.meters 15 -15 0)
             Toilet ->
-                Scene3d.sphereWithShadow
-                    (Scene3d.Material.nonmetal
-                         { baseColor = Color.blue
-                         , roughness = 0.1
-                         }
-                    ) (Sphere3d.atOrigin (millimeters 20))
+                skretModel
+                   |> List.map (
+                       Scene3d.blockWithShadow
+                                            (Material.nonmetal
+                                                 { baseColor = Color.white
+                                                 , roughness = 0.0 }
+                                            )
+                                       )
+
+                    |> Scene3d.group
 
 update : Msg -> Model -> Model
 update msg model =
